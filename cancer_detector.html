@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>cancer detector</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.8.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.0.4/dist/mobilenet.min.js"></script>
+  </head>
+  <body>
+    <h1>cancer detector</h1>
+
+    <input type="file" id="image-upload" accept="image/*" />
+    <img id="image-preview" width="300" height="300" />
+    <button onclick="classifyImage()">Classify</button>
+
+    <div id="result"></div>
+
+    <script>
+      // Load the MobileNet model
+async function loadModel() {
+  const model = await mobilenet.load();
+  return model;
+}
+
+// Classify the uploaded image
+async function classifyImage() {
+  const imageUpload = document.getElementById('image-upload');
+  const imagePreview = document.getElementById('image-preview');
+  const resultDiv = document.getElementById('result');
+
+  const image = imageUpload.files[0];
+  const imageURL = URL.createObjectURL(image);
+
+  imagePreview.src = imageURL;
+
+  const img = document.createElement('img');
+  img.src = imageURL;
+
+  const model = await loadModel();
+
+  const predictions = await model.classify(img);
+  resultDiv.innerHTML = '';
+  predictions.forEach((prediction) => {
+    const { className, probability } = prediction;
+    const result = document.createElement('p');
+    result.innerHTML = `${className}: ${probability.toFixed(4)}`;
+    resultDiv.appendChild(result);
+  });
+}
+
+    </script>
+  </body>
+</html>
+
+
+
