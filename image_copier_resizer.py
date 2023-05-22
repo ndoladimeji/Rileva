@@ -1,28 +1,32 @@
 import os
-import glob
-from tqdm import tqdm
 from PIL import Image, ImageFile
-from joblib import Parallel, delayed
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
-def image_resizer (image_path, output_file, resize):
+def image_resizer(image_path, output_file, resize):
     basename = os.path.basename(image_path)
     outpath = os.path.join(output_file, basename)
     img = Image.open(image_path)
     img = img.resize((resize[1], resize[0]), resample=Image.BILINEAR)
     img.save(outpath)
 
-os.mkdir('train_images')
-os.mkdir('test_images')
+# Create the directory to save resized images
+os.makedirs('resized_images', exist_ok=True)
 
-import os
+# Deploy the function in a for loop
+files = os.listdir('HAM10000_images_part1&2')
+for file in files:
+    file_path = os.path.join('HAM10000_images_part1&2', file)
+    image_resizer(file_path, 'resized_images', [224, 224])
+
+
+
 import shutil
 import pandas as pd
 
 df = pd.read_csv('train.csv')
 
-def copy_images(source_folder, destination_folder):
+def image_copier(source_folder, destination_folder):
     # Get the list of files in the source folder
     files = os.listdir(source_folder)
 
@@ -38,9 +42,3 @@ def copy_images(source_folder, destination_folder):
             # Copy the file to the destination folder
             shutil.copyfile(source_path, destination_path)
             print(f"Image {file} copied successfully.")
-
-# Example usage
-source_folder = 'HAM10000_images_part1&2'
-destination_folder = 'train_images'
-
-copy_images(source_folder, destination_folder)
