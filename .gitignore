@@ -6,3 +6,6 @@ HAM10000_images_part1&2/
 
 # Ignore the resized_images directory
 resized_images/
+
+# Ignore the train_images directory
+train_images/
