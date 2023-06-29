@@ -60,11 +60,7 @@ class HAMDataset(Dataset):
         # Data Augmentation
         if is_train or is_test:
             self.transform = transforms.Compose([transforms.ToPILImage(),
-                                                 transforms.RandomResizedCrop((224,224), scale=(0.4, 1.0)),
-                                                 transforms.RandomHorizontalFlip(p = 0.3),
-                                                 transforms.RandomVerticalFlip(p = 0.3),
-                                                 transforms.ToTensor(),
-                                                 transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))])
+                                     transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))])
         else:
             self.transform = transforms.Compose([transforms.ToPILImage(),
                                                  transforms.Resize((224,224)),
@@ -288,28 +284,6 @@ print(train_df.loc[train_df['target']==1].head().values)
 
 train_df.columns
 
-'''
-# Data object and Loader
-df = pd.DataFrame({'image_name':['ISIC_2637011', 'ISIC_0149568'], 'patient_id':['IP_7279968', 'IP_0962375'], 'sex':['male', 'female'], 'age_approx':[45.0, 55.0],
-                  'anatom_site_general_challenge':['head/neck', 'upper extremity'], 'diagnosis':['unknown', 'melanoma'],
-                   'benign_malignant':['benign', 'malignant'], 'target':[0,1]})
 
-
-dataset = HAMDataset(df, is_train=True, is_valid=False, is_test=False)
-loader = DataLoader(dataset,batch_size=1, shuffle=False)
-
-# Get a sample
-for image, label in loader:
-    image = torch.tensor(image, device=device, dtype=torch.float32)
-    label = torch.tensor(label, device=device, dtype=torch.float32)
-    out = model(image)
-    loss = criterion(out, label.unsqueeze(1))
-    pred = torch.sigmoid(out)
-    
-    print('loss: ', loss)
-    print('Label:', label)
-    print('Pred:', pred)
-    print('out:', torch.round(pred))
-'''
 print('__________________________________________________________________')
 
